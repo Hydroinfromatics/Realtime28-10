@@ -7,7 +7,7 @@ import plotly.graph_objs as go
 from datetime import datetime, timedelta
 import numpy as np
 import io
-
+import flask
 
 # Import the data processing functions from provided files
 from data_process import process_data, process_and_store_data, get_todays_data
