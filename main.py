@@ -41,6 +41,9 @@ AGGREGATIONS = {
 
 # API URL Configuration
 API_URL = "https://mongodb-api-hmeu.onrender.com"
+# Initialize Flask
+server = Flask(__name__)
+server.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', os.urandom(24))
 
 # Initialize Dash app
 app = Dash(
@@ -52,6 +55,14 @@ app = Dash(
 )
 app.title = 'Water Quality Monitoring'
 
+
+# Add a basic Flask route for the root URL
+@server.route('/')
+def index():
+    return '''
+    <h1>Water Quality Monitoring System</h1>
+    <p>Please visit the <a href="/dashboard/">dashboard</a> to view the monitoring system.</p>
+    '''
 def create_metric_card(title, icon_class, param_key):
     return dbc.Card([
         dbc.CardBody([
@@ -326,7 +337,13 @@ def export_data(n_clicks, stored_data):
 if __name__ == '__main__':
     # Initial data fetch
     process_and_store_data(API_URL)
-    app.run_server(debug=True, host='0.0.0.0', port=8050)
+    
+    # Get deployment configuration from environment variables
+    port = int(os.environ.get('PORT', 8080))
+    debug = os.environ.get('DEBUG', 'False').lower() == 'true'
+    
+    # Run the Flask server
+    server.run(host='0.0.0.0', port=port, debug=debug)
 
 
     
